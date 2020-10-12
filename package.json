@@ -1,0 +1,40 @@
+{
+  "name": "pushy-sdk-web",
+  "description": "The official Pushy SDK for Web.",
+  "author": "Pushy <support@pushy.me>",
+  "license": "Apache-2.0",
+  "version": "1.0.5",
+  "main": "dist/pushy-sdk-npm.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "notice": "NOTICE: Update SDK version code in package.json & config.js before building",
+    "build-cdn": "node ./node_modules/webpack/bin/webpack.js -p && rm -rf dist && cp -a build dist",
+    "build-npm": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.npm.js -p && rm -rf dist && cp -a build dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pushy-me/pushy-sdk-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pushy-me/pushy-sdk-web/issues"
+  },
+  "homepage": "https://github.com/pushy-me/pushy-sdk-web#readme",
+  "devDependencies": {
+    "babel-core": "^6.18.0",
+    "babel-eslint": "^7.1.0",
+    "babel-loader": "^6.2.7",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-regenerator": "^6.16.1",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "eslint": "^3.9.0",
+    "eslint-config-defaults": "^9.0.0",
+    "eslint-loader": "^1.6.0",
+    "file-loader": "0.9.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.3",
+    "promise-polyfill": "^6.0.2",
+    "whatwg-fetch": "^1.0.0"
+  }
+}
