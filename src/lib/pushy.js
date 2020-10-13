@@ -55,6 +55,11 @@ let Pushy = {
                     subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: Base64.urlB64ToUint8Array(publicKey) });
                 }
                 catch (e) {
+                    // Brave: Instruct user to enable "Use Google Services for Push Messaging"
+                    if (navigator.brave && e.message.indexOf('push service error') !== -1) {
+                        return reject(new Error('Please enable "Use Google Services for Push Messaging" in Brave settings to use this feature', e));
+                    }
+
                     // Most likely user denied permission
                     return reject(new Error(`Failed to subscribe the device: ${e.message}`, e));
                 }
