@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "webpack-dev-server",
     "notice": "NOTICE: Update SDK version code in package.json & config.js before building",
-    "build-cdn": "node ./node_modules/webpack/bin/webpack.js -p && rm -rf dist && cp -a build dist",
-    "build-npm": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.npm.js -p && rm -rf dist && cp -a build dist"
+    "build-cdn": "node ./node_modules/webpack/bin/webpack.js -p && cp -a build/pushy-sdk.js dist/",
+    "build-npm": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.npm.js -p && cp -a build/pushy-sdk-npm.js dist/"
   },
   "repository": {
     "type": "git",
