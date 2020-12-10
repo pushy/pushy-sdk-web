@@ -1,5 +1,5 @@
 // Comment this import when building for cdn (non-npm)
-// import 'babel-polyfill';
+import 'babel-polyfill';
 
 import api from '../util/api';
 import config from '../config';
@@ -153,6 +153,17 @@ let Pushy = {
 
             // All done
             resolve(response.token);
+        });
+    },
+
+    setNotificationListener(handler) {
+        // Listen for service worker 'message' event
+        navigator.serviceWorker.addEventListener('message', function(event){
+            // Ensure message is a Pushy notification
+            if (event.data && event.data._pushy) {
+                // Pass to notification listener
+                handler(event.data);
+            }
         });
     },
 

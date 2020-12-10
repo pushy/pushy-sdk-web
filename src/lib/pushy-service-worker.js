@@ -22,6 +22,17 @@ self.addEventListener('push', function (event) {
 
     // Wait until notification is shown
     event.waitUntil(self.registration.showNotification(title, options));
+
+    // Send to Pushy notification listener (if webpage is open)
+    clients.matchAll().then(clients => {
+        // Set pushy notification flag
+        data._pushy = true;
+        
+        // Send to all open pages
+        clients.forEach(client => {
+            client.postMessage(data, [new MessageChannel().port2]);
+        });
+    });
 });
 
 // Listen for notification click event
