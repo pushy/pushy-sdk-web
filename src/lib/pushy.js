@@ -1,5 +1,5 @@
-// Comment this import when building for cdn (non-npm)
-import 'babel-polyfill';
+// Comment this import when building for npm (leave uncommented for cdn)
+// import 'babel-polyfill';
 
 import api from '../util/api';
 import config from '../config';
