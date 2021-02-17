@@ -20,6 +20,10 @@ self.addEventListener('push', function (event) {
         }
     };
 
+    // Support for notification collapsing
+    if (data['_pushyCollapseKey'])
+        options.tag = data['_pushyCollapseKey'];
+    
     // Wait until notification is shown
     event.waitUntil(self.registration.showNotification(title, options));
 
