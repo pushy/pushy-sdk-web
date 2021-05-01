@@ -27,12 +27,15 @@ let Pushy = {
             // Service worker filename with extension (default to service-worker.js)
             let serviceWorkerFile = options.serviceWorkerFile || config.serviceWorker.fileName;
 
+            // Make it possible to customize Service Worker scope
+            let serviceWorkerOptions = { scope: options.serviceWorkerScope || './' };
+
             // Registration object
             let registration;
 
             try {
                 // Register service worker
-                registration = await navigator.serviceWorker.register(`/${serviceWorkerFile}`);
+                registration = await navigator.serviceWorker.register(`/${serviceWorkerFile}`, serviceWorkerOptions);
             }
             catch (e) {
                 // Service worker file missing
@@ -158,7 +161,7 @@ let Pushy = {
 
     setNotificationListener(handler) {
         // Listen for service worker 'message' event
-        navigator.serviceWorker.addEventListener('message', function(event){
+        navigator.serviceWorker.addEventListener('message', function (event) {
             // Ensure message is a Pushy notification
             if (event.data && event.data._pushy) {
                 // Pass to notification listener
