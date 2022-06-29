@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pushy-me/pushy-sdk-web.git"
+    "url": "git+https://github.com/pushy/pushy-sdk-web.git"
   },
   "bugs": {
-    "url": "https://github.com/pushy-me/pushy-sdk-web/issues"
+    "url": "https://github.com/pushy/pushy-sdk-web/issues"
   },
-  "homepage": "https://github.com/pushy-me/pushy-sdk-web#readme",
+  "homepage": "https://github.com/pushy/pushy-sdk-web#readme",
   "devDependencies": {
     "babel-core": "^6.18.0",
     "babel-eslint": "^7.1.0",
