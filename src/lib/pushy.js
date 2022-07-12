@@ -160,6 +160,11 @@ let Pushy = {
     },
 
     setNotificationListener(handler) {
+        // Check for Web Push compatibility
+        if (!('serviceWorker' in navigator && 'PushManager' in window)) {
+            return console.error('Web push is not supported by this browser.');
+        }
+
         // Listen for service worker 'message' event
         navigator.serviceWorker.addEventListener('message', function (event) {
             // Ensure message is a Pushy notification
