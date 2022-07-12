@@ -1,2 +1,2 @@
-// Import Pushy Service Worker 1.0.7
-importScripts('https://sdk.pushy.me/web/1.0.7/pushy-service-worker.js');
+// Import Pushy Service Worker 1.0.9
+importScripts('https://sdk.pushy.me/web/1.0.9/pushy-service-worker.js');

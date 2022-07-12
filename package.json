@@ -3,7 +3,7 @@
   "description": "The official Pushy SDK for Web.",
   "author": "Pushy <support@pushy.me>",
   "license": "Apache-2.0",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "dist/pushy-sdk-npm.js",
   "scripts": {
     "dev": "webpack-dev-server",
