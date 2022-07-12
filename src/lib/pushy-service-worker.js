@@ -28,7 +28,7 @@ self.addEventListener('push', function (event) {
     event.waitUntil(self.registration.showNotification(title, options));
 
     // Send to Pushy notification listener (if webpage is open)
-    clients.matchAll().then(clients => {
+    clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clients => {
         // Set pushy notification flag
         data._pushy = true;
         

@@ -159,11 +159,14 @@ let Pushy = {
         });
     },
 
-    setNotificationListener(handler) {
+    async setNotificationListener(handler) {
         // Check for Web Push compatibility
         if (!('serviceWorker' in navigator && 'PushManager' in window)) {
             return console.error('Web push is not supported by this browser.');
         }
+
+        // Wait for service worker to become active
+        await navigator.serviceWorker.ready;
 
         // Listen for service worker 'message' event
         navigator.serviceWorker.addEventListener('message', function (event) {
