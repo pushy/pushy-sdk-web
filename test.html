@@ -9,22 +9,24 @@
   <!--<script src="https://sdk.pushy.me/web/1.0.0/pushy-sdk.js"></script>-->
 
   <script type="text/javascript">
-    // Register device for push notifications
-    Pushy.register({ appId: '{your-app-id}' }).then(function (deviceToken) {
-      // Print device token to console
-      console.log('Pushy device token: ' + deviceToken);
+    function onClick() {
+      // Register device for push notifications
+      Pushy.register({ appId: '{your-app-id}' }).then(function (deviceToken) {
+        // Print device token to console
+        alert('Pushy device token: ' + deviceToken);
 
-      // Optionally subscribe the device to a topic
-      Pushy.subscribe('news');
+        // Optionally subscribe the device to a topic
+        Pushy.subscribe('news');
 
-      // Send the token to your backend server via an HTTP GET request
-      //fetch('https://your.api.hostname/register/device?token=' + deviceToken);
+        // Send the token to your backend server via an HTTP GET request
+        //fetch('https://your.api.hostname/register/device?token=' + deviceToken);
 
-      // Succeeded, optionally do something to alert the user
-    }).catch(function (err) {
-      // Handle registration errors
-      console.error('Registration failed:', err);
-    });
+        // Succeeded, optionally do something to alert the user
+      }).catch(function (err) {
+        // Notify user of failure
+        alert('Registration failed: ' + err.message);
+      });
+    }
 
     // Handle push notifications (only when web page is open)
     Pushy.setNotificationListener(function (data) {
@@ -38,5 +40,8 @@
         alert('Received notification: ' + message);
     });
   </script>
+  <h1>
+    <a href="#" onClick="onClick()">Register for Web Push</a>
+  </h1>
 </body>
 </html>
