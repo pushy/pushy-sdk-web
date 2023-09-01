@@ -1,6 +1,6 @@
 module.exports = {
     // Web Push SDK version code
-    version: 1010,
+    version: 1011,
     // SDK platform
     platform: 'web',
     // Pushy API endpoints (production and development)

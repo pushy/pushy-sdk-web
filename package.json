@@ -3,13 +3,13 @@
   "description": "The official Pushy SDK for Web.",
   "author": "Pushy <support@pushy.me>",
   "license": "Apache-2.0",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "main": "dist/pushy-sdk-npm.js",
   "scripts": {
     "dev": "webpack-dev-server",
     "notice": "NOTICE: Update SDK version code in package.json & config.js before building",
     "build-cdn": "node ./node_modules/webpack/bin/webpack.js -p && cp -a build/pushy-sdk.js dist/",
-    "build-npm": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.npm.js -p && cp -a build/pushy-sdk-npm.js dist/"
+    "build-npm": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.npm.js -p && cp -a build/pushy-sdk-npm.js dist/ && cp -a build/pushy-sdk-npm.js dist/pushy-sdk-no-polyfill.js"
   },
   "repository": {
     "type": "git",
