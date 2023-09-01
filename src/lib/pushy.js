@@ -34,7 +34,7 @@ let Pushy = {
             let serviceWorkerFile = options.serviceWorkerFile || config.serviceWorker.fileName;
 
             // Make it possible to customize Service Worker scope
-            let serviceWorkerOptions = { scope: options.serviceWorkerScope || './' };
+            let serviceWorkerOptions = { scope: options.serviceWorkerScope || '/' };
 
             // Registration object
             let registration;
