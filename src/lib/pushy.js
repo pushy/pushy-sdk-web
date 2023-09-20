@@ -351,9 +351,32 @@ let Pushy = {
             localStorage.removeItem(config.localStorageKeys.tokenAuth);
             localStorage.removeItem(config.localStorageKeys.tokenAppId);
 
-            // Save updated Pushy Enterprise hostname in local storage
-            localStorage.setItem(config.localStorageKeys.enterpriseEndpoint, endpoint);
+            // Persist hostname in local storage
+            if (!endpoint) {
+                // Clear Pushy Enterprise hostname if null
+                localStorage.removeItem(config.localStorageKeys.enterpriseEndpoint);
+            }
+            else {
+                // Save updated Pushy Enterprise hostname in local storage
+                localStorage.setItem(config.localStorageKeys.enterpriseEndpoint, endpoint);
+            }
         }
+    },
+
+    setProxyEndpoint(endpoint) {
+        // Null endpoint?
+        if (!endpoint) {
+            return localStorage.removeItem(config.localStorageKeys.proxyEndpoint);
+        }
+
+        // Strip trailing slash if string provided
+        if (typeof endpoint === 'string' && endpoint.substr(-1) === '/') {
+            // Remove last character via substr()
+            endpoint = endpoint.substr(0, endpoint.length - 1);
+        }
+
+        // Save updated proxy endpoint hostname in local storage
+        localStorage.setItem(config.localStorageKeys.proxyEndpoint, endpoint);
     }
 }
 

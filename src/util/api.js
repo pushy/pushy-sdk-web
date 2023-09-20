@@ -53,6 +53,14 @@ export default {
         //     return config.api.devEndpoint;
         // }
         
+        // Attempt to fetch proxy endpoint hostname (may be null)
+        let proxyEndpoint = localStorage.getItem(config.localStorageKeys.proxyEndpoint);
+
+        // Proxy endpoint configured?
+        if (proxyEndpoint) {
+            return 'https://' + proxyEndpoint;
+        }
+
         // Attempt to fetch Pushy Enterprise hostname (may be null)
         let enterpriseEndpoint = localStorage.getItem(config.localStorageKeys.enterpriseEndpoint);
 

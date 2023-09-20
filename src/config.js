@@ -18,6 +18,7 @@ module.exports = {
         token: 'pushyToken',
         tokenAuth: 'pushyTokenAuth',
         tokenAppId: 'pushyTokenAppId',
+        proxyEndpoint: 'pushyProxyEndpoint',
         enterpriseEndpoint: 'pushyEnterpriseEndpoint'
     },
     // Service worker config
