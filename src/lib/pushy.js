@@ -25,8 +25,8 @@ let Pushy = {
                 }
             }
 
-            // Check for HTML5 local storage or WebExtnesion storage support
-            if (await localstorage.isSupported() === false) {
+            // Check for HTML5 local storage or WebExtension storage support
+            if (!(await localstorage.supported())) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
@@ -205,7 +205,7 @@ let Pushy = {
 
     subscribe(topics) {
         return new Promise(async (resolve, reject) => {
-            // Check for HTML5 local storage or WebExtnesion storage support
+            // Check for HTML5 local storage or WebExtension storage support
             if (localstorage.isSupported() === false) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
@@ -251,8 +251,8 @@ let Pushy = {
 
     unsubscribe(topics) {
         return new Promise(async (resolve, reject) => {
-            // Check for HTML5 local storage or WebExtnesion storage support
-            if (await localstorage.isSupported() === false) {
+            // Check for HTML5 local storage or WebExtension storage support
+            if (!(await localstorage.supported())) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
@@ -300,8 +300,8 @@ let Pushy = {
             // Attempted validation
             this.attemptedValidation = true;
 
-            // Check for HTML5 local storage or WebExtnesion storage support
-            if (await localstorage.isSupported() === false) {
+            // Check for HTML5 local storage or WebExtension storage support
+            if (!(await localstorage.supported())) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
