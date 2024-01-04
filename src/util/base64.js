@@ -9,7 +9,7 @@ export default {
             .replace(/_/g, '/');
 
         // Decode Base64-encoded string
-        const rawData = window.atob(base64);
+        const rawData = self.atob(base64);
 
         // Prepare Uint8 array
         const outputArray = new Uint8Array(rawData.length);
