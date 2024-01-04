@@ -1,10 +1,11 @@
 // Comment this import when building for npm (leave uncommented for cdn)
 // import 'babel-polyfill';
 
-import api, {localstorage} from '../util/api';
+import api from '../util/api';
 import config from '../config';
 import Base64 from '../util/base64';
 import Promise from 'promise-polyfill';
+import { localStorage } from '../util/storage';
 
 let Pushy = {
     register(options) {
@@ -15,7 +16,7 @@ let Pushy = {
             }
 
             // Check for Web Push compatibility
-            if (!('serviceWorker' in navigator && 'PushManager' in self) || typeof ServiceWorkerRegistration !== 'undefined') {
+            if (!('PushManager' in self) || !('serviceWorker' in navigator || typeof ServiceWorkerRegistration !== 'undefined')) {
                 // For iOS 16.4, notify about PWA requirement
                 if (/iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
                     return reject(new Error('For Web Push on iOS 16.4+, you will first need to click the "Share" button -> "Add to Home Screen" before you can sign up for push notifications.'));
@@ -26,7 +27,7 @@ let Pushy = {
             }
 
             // Check for HTML5 local storage or WebExtension storage support
-            if (!(await localstorage.supported())) {
+            if (!localStorage.isSupported()) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
@@ -43,9 +44,9 @@ let Pushy = {
                 // Register service worker
                 if (navigator.serviceWorker) {
                     // Register service worker from custom URL
-                  registration = await navigator.serviceWorker.register(`/${serviceWorkerFile}`, serviceWorkerOptions);
+                    registration = await navigator.serviceWorker.register(`/${serviceWorkerFile}`, serviceWorkerOptions);
                 } else if (self.registration) {
-                  // Expose the registration object if you are already in a service worker
+                    // Expose the registration object if you are already in a service worker
                     registration = self.registration;
                 }
             }
@@ -54,10 +55,18 @@ let Pushy = {
                 return reject(new Error(`Failed to load '${self.location.origin}/${serviceWorkerFile}': ${e.message}`, e));
             }
 
-          // Wait for service worker to become active
-          if (navigator.serviceWorker) {
-            await navigator.serviceWorker.ready 
-          }
+            // Wait for service worker to become active
+            if (navigator.serviceWorker) {
+                await navigator.serviceWorker.ready;
+            }
+            // WebExtensions support
+            else if (self.registration) {
+                // Wait for WebExtension service worker to be ready
+                while (!registration.active) {
+                    // Check again in 100ms
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
 
             // Attempt to fetch existing push subscription
             let subscription = await registration.pushManager.getSubscription();
@@ -65,7 +74,7 @@ let Pushy = {
             // Not subscribed yet?
             if (!subscription) {
                 // Choose public key based on configured Pushy plan (Pro / Enterprise)
-                let publicKey = await this.isEnterpriseConfigured() ? config.vapidDetails.enterprisePublicKey : config.vapidDetails.publicKey;
+                let publicKey = this.isEnterpriseConfigured() ? config.vapidDetails.enterprisePublicKey : config.vapidDetails.publicKey;
 
                 try {
                     // Obtain Web Push subscription
@@ -84,9 +93,9 @@ let Pushy = {
             else {
                 // We already have a Web Push subscription
                 // Attempt to fetch existing device credentials
-                let token = await localstorage.get(config.localStorageKeys.token);
-                let tokenAuth = await localstorage.get(config.localStorageKeys.tokenAuth);
-                let tokenAppId = await localstorage.get(config.localStorageKeys.tokenAppId);
+                let token = localStorage.getItem(config.localStorageKeys.token);
+                let tokenAuth = localStorage.getItem(config.localStorageKeys.tokenAuth);
+                let tokenAppId = localStorage.getItem(config.localStorageKeys.tokenAppId);
 
                 // Check for new app ID different than the one we registered with
                 if (token && tokenAppId && options.appId && typeof tokenAppId === 'string' && tokenAppId !== options.appId) {
@@ -160,13 +169,16 @@ let Pushy = {
             }
 
             // Save device token and auth in local storage
-            await localstorage.set(config.localStorageKeys.token, response.token);
-            await localstorage.set(config.localStorageKeys.tokenAuth, response.auth);
+            localStorage.setItem(config.localStorageKeys.token, response.token);
+            localStorage.setItem(config.localStorageKeys.tokenAuth, response.auth);
 
             // If appId was passed in, save it for later so we can tie the token to the app
             if (options.appId) {
-              await localstorage.set(config.localStorageKeys.tokenAppId, options.appId);
+                localStorage.setItem(config.localStorageKeys.tokenAppId, options.appId);
             }
+
+            // WebExtension support: recache storage
+            await localStorage.recacheWebExtensionStorage();
 
             // All done
             resolve(response.token);
@@ -175,13 +187,13 @@ let Pushy = {
 
     async setNotificationListener(handler) {
         // Check for Web Push compatibility
-        if (!('serviceWorker' in navigator && 'PushManager' in self) || typeof ServiceWorkerRegistration !== 'undefined') {
+        if (!('PushManager' in self) || !('serviceWorker' in navigator || typeof ServiceWorkerRegistration !== 'undefined')) {
             return console.error('Web push is not supported by this browser.');
         }
 
         // Wait for service worker to become active
         if (navigator.serviceWorker) {
-          await navigator.serviceWorker.ready;
+            await navigator.serviceWorker.ready;
         }
 
         // Listen for service worker 'message' event
@@ -194,10 +206,10 @@ let Pushy = {
         });
     },
 
-    async isRegistered() {
+    isRegistered() {
         // Attempt to fetch existing token and auth
-        let token = await localstorage.get(config.localStorageKeys.token);
-        let tokenAuth = await localstorage.get(config.localStorageKeys.tokenAuth);
+        let token = localStorage.getItem(config.localStorageKeys.token);
+        let tokenAuth = localStorage.getItem(config.localStorageKeys.tokenAuth);
 
         // Both values must exist
         return token && tokenAuth;
@@ -206,13 +218,13 @@ let Pushy = {
     subscribe(topics) {
         return new Promise(async (resolve, reject) => {
             // Check for HTML5 local storage or WebExtension storage support
-            if (localstorage.isSupported() === false) {
+            if (!localStorage.isSupported()) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
             // Attempt to fetch existing token and auth
-            let token = await localstorage.get(config.localStorageKeys.token);
-            let tokenAuth = await localstorage.get(config.localStorageKeys.tokenAuth);
+            let token = localStorage.getItem(config.localStorageKeys.token);
+            let tokenAuth = localStorage.getItem(config.localStorageKeys.tokenAuth);
 
             // Not registered yet?
             if (!token || !tokenAuth) {
@@ -252,13 +264,13 @@ let Pushy = {
     unsubscribe(topics) {
         return new Promise(async (resolve, reject) => {
             // Check for HTML5 local storage or WebExtension storage support
-            if (!(await localstorage.supported())) {
+            if (!localStorage.isSupported()) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
             // Attempt to fetch existing token and auth
-            let token = await localstorage.get(config.localStorageKeys.token);
-            let tokenAuth = await localstorage.get(config.localStorageKeys.tokenAuth);
+            let token = localStorage.getItem(config.localStorageKeys.token);
+            let tokenAuth = localStorage.getItem(config.localStorageKeys.tokenAuth);
 
             // Not registered yet?
             if (!token || !tokenAuth) {
@@ -301,13 +313,13 @@ let Pushy = {
             this.attemptedValidation = true;
 
             // Check for HTML5 local storage or WebExtension storage support
-            if (!(await localstorage.supported())) {
+            if (!localStorage.isSupported()) {
                 return reject(new Error('Local storage is not supported by this browser.'));
             }
 
             // Attempt to fetch existing token and auth
-            let token = await localstorage.get(config.localStorageKeys.token);
-            let tokenAuth = await localstorage.get(config.localStorageKeys.tokenAuth);
+            let token = localStorage.getItem(config.localStorageKeys.token);
+            let tokenAuth = localStorage.getItem(config.localStorageKeys.tokenAuth);
 
             // Not registered yet?
             if (!token || !tokenAuth) {
@@ -339,12 +351,12 @@ let Pushy = {
         });
     },
 
-    async isEnterpriseConfigured() {
+    isEnterpriseConfigured() {
         // Check whether the enterprise endpoint key is set
-        return await localstorage.get(config.localStorageKeys.enterpriseEndpoint) != undefined;
+        return localStorage.getItem(config.localStorageKeys.enterpriseEndpoint) != undefined;
     },
 
-    async setEnterpriseConfig(endpoint) {
+    setEnterpriseConfig(endpoint) {
         // Strip trailing slash if string provided
         if (typeof endpoint === 'string' && endpoint.substr(-1) === '/') {
             // Remove last character via substr()
@@ -352,31 +364,31 @@ let Pushy = {
         }
 
         // Retrieve previous endpoint (may be null)
-        let previousEndpoint = await localstorage.get(config.localStorageKeys.enterpriseEndpoint);
+        let previousEndpoint = localStorage.getItem(config.localStorageKeys.enterpriseEndpoint);
 
         // Endpoint changed?
         if (endpoint != previousEndpoint) {
             // Clear existing registration
-            await localstorage.remove(config.localStorageKeys.token);
-            await localstorage.remove(config.localStorageKeys.tokenAuth);
-            await localstorage.remove(config.localStorageKeys.tokenAppId);
+            localStorage.removeItem(config.localStorageKeys.token);
+            localStorage.removeItem(config.localStorageKeys.tokenAuth);
+            localStorage.removeItem(config.localStorageKeys.tokenAppId);
 
             // Persist hostname in local storage
             if (!endpoint) {
                 // Clear Pushy Enterprise hostname if null
-              await localstorage.remove(config.localStorageKeys.enterpriseEndpoint);
+                localStorage.removeItem(config.localStorageKeys.enterpriseEndpoint);
             }
             else {
                 // Save updated Pushy Enterprise hostname in local storage
-              await localstorage.set(config.localStorageKeys.enterpriseEndpoint, endpoint);
+                localStorage.setItem(config.localStorageKeys.enterpriseEndpoint, endpoint);
             }
         }
     },
 
-    async setProxyEndpoint(endpoint) {
+    setProxyEndpoint(endpoint) {
         // Null endpoint?
         if (!endpoint) {
-            return await localstorage.remove(config.localStorageKeys.proxyEndpoint);
+            return localStorage.removeItem(config.localStorageKeys.proxyEndpoint);
         }
 
         // Strip trailing slash if string provided
@@ -386,14 +398,14 @@ let Pushy = {
         }
 
         // Save updated proxy endpoint hostname in local storage
-        await localstorage.set(config.localStorageKeys.proxyEndpoint, endpoint);
+        localStorage.setItem(config.localStorageKeys.proxyEndpoint, endpoint);
     }
 }
 
 // Attempt to validate device credentials X ms after page has loaded
-setTimeout(async () => {
+setTimeout(() => {
     // Not registered yet?
-    if (!await Pushy.isRegistered()) {
+    if (!Pushy.isRegistered()) {
         return;
     }
 
