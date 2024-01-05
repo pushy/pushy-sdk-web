@@ -37,6 +37,10 @@ self.addEventListener('push', function (event) {
             client.postMessage(data, [new MessageChannel().port2]);
         });
     });
+
+    // WebExtensions support
+    // Ddispatch event to current service worker
+    serviceWorker.dispatchEvent(new CustomEvent('message', {detail: data}));
 });
 
 // Listen for notification click event

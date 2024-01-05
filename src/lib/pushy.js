@@ -195,9 +195,25 @@ let Pushy = {
         if (navigator.serviceWorker) {
             await navigator.serviceWorker.ready;
         }
+        // WebExtensions support
+        else if (self.registration) {
+            // Wait for WebExtension service worker to be ready
+            while (!self.registration.active) {
+                // Check again in 100ms
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            // Set service worker to currently active worker
+            navigator.serviceWorker = self.registration.active;
+        }
 
         // Listen for service worker 'message' event
         navigator.serviceWorker.addEventListener('message', function (event) {
+            // Add support for WebExtensions
+            if (!event.data && event.detail) {
+                event.data = event.detail;
+            }
+            
             // Ensure message is a Pushy notification
             if (event.data && event.data._pushy) {
                 // Pass to notification listener
