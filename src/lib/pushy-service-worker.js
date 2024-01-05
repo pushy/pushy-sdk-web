@@ -39,7 +39,7 @@ self.addEventListener('push', function (event) {
     });
 
     // WebExtensions support
-    // Ddispatch event to current service worker
+    // Dispatch event to current service worker
     serviceWorker.dispatchEvent(new CustomEvent('message', {detail: data}));
 });
 
