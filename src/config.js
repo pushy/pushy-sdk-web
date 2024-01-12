@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
     // Web Push SDK version code
     version: 1012,
     // SDK platform
@@ -32,3 +32,14 @@ module.exports = {
         deviceValidationDelay: 5000
     }
 };
+
+// Export class
+export default config;
+
+try {
+    // Support ES5 exports
+    module.exports = config;
+}
+catch (err) {
+    // Ignore undefined variable 'module' errors
+}

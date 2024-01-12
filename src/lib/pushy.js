@@ -1,4 +1,4 @@
-// Comment this import when building for npm (leave uncommented for cdn)
+// Temporarily uncomment this import when building for cdn (leave commented for npm)
 // import 'babel-polyfill';
 
 import api from '../util/api';
@@ -438,4 +438,12 @@ setTimeout(() => {
 }, config.logic.deviceValidationDelay);
 
 // Export class
-module.exports = Pushy;
+export default Pushy;
+
+try {
+    // Support ES5 exports
+    module.exports = Pushy;
+}
+catch (err) {
+    // Ignore undefined variable 'module' errors
+}
