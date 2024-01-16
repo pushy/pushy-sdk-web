@@ -19,6 +19,10 @@
     "url": "https://github.com/pushy/pushy-sdk-web/issues"
   },
   "homepage": "https://github.com/pushy/pushy-sdk-web#readme",
+  "dependencies": {
+    "promise-polyfill": "^6.0.2",
+    "whatwg-fetch": "^1.0.0"
+  },
   "devDependencies": {
     "babel-core": "^6.18.0",
     "babel-eslint": "^7.1.0",
@@ -33,8 +37,6 @@
     "file-loader": "0.9.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.3",
-    "promise-polyfill": "^6.0.2",
-    "whatwg-fetch": "^1.0.0"
+    "webpack": "^1.13.3"
   }
 }
