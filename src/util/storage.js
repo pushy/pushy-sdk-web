@@ -69,7 +69,7 @@ export const localStorage = {
         const webExtensionNamespace = 'browser' in self ? 'browser' : 'chrome' in self ? 'chrome' : undefined;
 
         // Check for browser.storage.local support
-        return webExtensionNamespace in self && 'storage' in self[webExtensionNamespace] && 'local' in self[webExtensionNamespace].storage;
+        return webExtensionNamespace && webExtensionNamespace in self && 'storage' in self[webExtensionNamespace] && 'local' in self[webExtensionNamespace].storage;
     }
 };
 
