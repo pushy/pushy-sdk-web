@@ -1,9 +1,4 @@
-import config from '../config.js';
-
-// Next.js support
-if (typeof self === 'undefined') {
-    var self = {};
-}
+import config from '../config';
 
 // WebExtensions storage support
 const browser = self.browser || self.chrome;
