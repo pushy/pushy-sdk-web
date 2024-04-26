@@ -1,6 +1,6 @@
 const config = {
     // Web Push SDK version code
-    version: 1019,
+    version: 1020,
     // SDK platform
     platform: 'web',
     // Pushy API endpoints (production and development)
