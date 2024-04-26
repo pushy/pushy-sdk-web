@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
-import config from '../config';
-import { localStorage } from '../util/storage';
+import config from '../config.js';
+import { localStorage } from '../util/storage.js';
 
 export default {
     async get(path, options) {

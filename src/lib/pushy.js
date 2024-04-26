@@ -1,11 +1,16 @@
 // Temporarily uncomment this import when building for cdn (leave commented for npm)
 // import 'babel-polyfill';
 
-import api from '../util/api';
-import config from '../config';
-import Base64 from '../util/base64';
+import api from '../util/api.js';
+import config from '../config.js';
+import Base64 from '../util/base64.js';
 import Promise from 'promise-polyfill';
-import { localStorage } from '../util/storage';
+import { localStorage } from '../util/storage.js';
+
+// Next.js support
+if (typeof self === 'undefined') {
+    var self = {}, navigator = {};
+}
 
 let Pushy = {
     register(options) {
