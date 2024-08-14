@@ -4,7 +4,7 @@
   "author": "Pushy <support@pushy.me>",
   "license": "Apache-2.0",
   "comment": "NOTE: Increment src/config.js version code",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "main": "src/lib/pushy.js",
   "types": "src/lib/pushy.d.ts",
   "scripts": {
