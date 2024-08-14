@@ -6,6 +6,7 @@
   "comment": "NOTE: Increment src/config.js version code",
   "version": "1.0.21",
   "main": "src/lib/pushy.js",
+  "types": "src/lib/pushy.d.ts",
   "scripts": {
     "dev": "webpack-dev-server",
     "notice": "NOTICE: Update SDK version code in package.json & config.js before building",
