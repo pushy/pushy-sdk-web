@@ -21,8 +21,6 @@
   },
   "homepage": "https://github.com/pushy/pushy-sdk-web#readme",
   "dependencies": {
-    "promise-polyfill": "^6.0.2",
-    "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.18.0",

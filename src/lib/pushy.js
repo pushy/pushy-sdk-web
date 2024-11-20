@@ -4,7 +4,6 @@
 import api from '../util/api';
 import config from '../config';
 import Base64 from '../util/base64';
-import Promise from 'promise-polyfill';
 import { localStorage } from '../util/storage';
 
 let Pushy = {
