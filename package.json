@@ -20,8 +20,6 @@
     "url": "https://github.com/pushy/pushy-sdk-web/issues"
   },
   "homepage": "https://github.com/pushy/pushy-sdk-web#readme",
-  "dependencies": {
-  },
   "devDependencies": {
     "babel-core": "^6.18.0",
     "babel-eslint": "^7.1.0",
