@@ -184,7 +184,15 @@ let Pushy = {
         });
     },
 
+    async removeNotificationListener() {
+        // Remove service worker 'message' event listener
+        navigator.serviceWorker.removeEventListener('message', this.onServiceWorkerMessage);
+    },
+
     async setNotificationListener(handler) {
+        // Store handler for later
+        navigator.serviceWorker.handler = handler;
+
         // Check for Web Push compatibility
         if (!('PushManager' in self) || !('serviceWorker' in navigator || typeof ServiceWorkerRegistration !== 'undefined')) {
             return console.error('Web push is not supported by this browser.');
@@ -207,18 +215,20 @@ let Pushy = {
         }
 
         // Listen for service worker 'message' event
-        navigator.serviceWorker.addEventListener('message', function (event) {
-            // Add support for WebExtensions
-            if (!event.data && event.detail) {
-                event.data = event.detail;
-            }
-            
-            // Ensure message is a Pushy notification
-            if (event.data && event.data._pushy) {
-                // Pass to notification listener
-                handler(event.data);
-            }
-        });
+        navigator.serviceWorker.addEventListener('message', this.onServiceWorkerMessage);
+    },
+
+    onServiceWorkerMessage(event) {
+        // Add support for WebExtensions
+        if (!event.data && event.detail) {
+            event.data = event.detail;
+        }
+        
+        // Ensure message is a Pushy notification
+        if (event.data && event.data._pushy && navigator.serviceWorker.handler) {
+            // Pass to notification listener
+            navigator.serviceWorker.handler(event.data);
+        }
     },
 
     isRegistered() {
